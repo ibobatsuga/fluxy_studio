@@ -36,27 +36,18 @@ const nextConfig: NextConfig = {
     },
   },
 
+  // Acknowledge Turbopack as the default bundler (Next.js 16+).
+  // No extra resolveAlias needed — pg/prisma stay server-side only
+  // after the proper Server/Client Component split.
+  turbopack: {},
+
   async headers() {
     return [
       {
-        // Apply security headers to all routes
         source: "/(.*)",
         headers: securityHeaders,
       },
     ];
-  },
-
-  // Tambahkan bagian Webpack ini di bawah pengaturan headers
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        tls: false,
-        net: false,
-        fs: false,
-      };
-    }
-    return config;
   },
 };
 

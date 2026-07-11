@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 import AppShell from "@/components/layout/AppShell";
 import { getCreditHistory, getBalance } from "@/lib/credit/engine";
 import PurchaseButton from "@/components/billing/PurchaseButton";
@@ -53,7 +54,8 @@ const TX_COLORS: Record<string, string> = {
 
 export default async function BillingPage() {
   const session = await auth();
-  const userId = session?.user?.id!;
+  const userId = session?.user?.id;
+  if (!userId) redirect("/login");
 
   const [balance, history] = await Promise.all([
     getBalance(userId),

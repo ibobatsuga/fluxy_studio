@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import AppShell from "@/components/layout/AppShell";
 import Link from "next/link";
@@ -56,7 +57,6 @@ export default async function Dashboard() {
   // Middleware handles redirect, but add a safety guard here too
   const userId = session?.user?.id;
   if (!userId) {
-    const { redirect } = await import("next/navigation");
     redirect("/login");
   }
 
