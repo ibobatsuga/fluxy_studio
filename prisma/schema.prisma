@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum TransactionType {
+  PURCHASE
+  DEDUCT
+  REFUND
+  BONUS
+}
+
+enum GenerationStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+// ─── Models ──────────────────────────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String
+  role      UserRole @default(USER)
+  credits   Float    @default(25)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  generations  Generation[]
+  transactions CreditTransaction[]
+  auditLogs    AuditLog[]
+}
+
+model Feature {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  module      String   // A | B | C | D
+  creditCost  Float
+  aiModel     String?
+  description String?
+  icon        String?
+  active      Boolean  @default(true)
+  safetyLevel Int      @default(1) // 1=normal, 2=moderate, 3=strict
+  multiImage  Boolean  @default(false)
+  category    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  generations  Generation[]
+  transactions CreditTransaction[]
+}
+
+model CreditTransaction {
+  id           String          @id @default(cuid())
+  userId       String
+  type         TransactionType
+  amount       Float           // positive = add, negative = deduct
+  balanceBefore Float
+  balanceAfter  Float
+  description  String?
+  featureId    String?
+  generationId String?
+  createdAt    DateTime        @default(now())
+
+  user       User        @relation(fields: [userId], references: [id])
+  feature    Feature?    @relation(fields: [featureId], references: [id])
+  generation Generation? @relation(fields: [generationId], references: [id])
+}
+
+model Generation {
+  id         String           @id @default(cuid())
+  userId     String
+  featureId  String
+  inputUrl   String?
+  outputUrl  String?
+  prompt     String?
+  provider   String?
+  model      String?
+  creditUsed Float
+  status     GenerationStatus @default(PENDING)
+  error      String?
+  metadata   Json?
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  user         User                @relation(fields: [userId], references: [id])
+  feature      Feature             @relation(fields: [featureId], references: [id])
+  transactions CreditTransaction[]
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  action     String
+  resource   String?
+  resourceId String?
+  metadata   Json?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+}
