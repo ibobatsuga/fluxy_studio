@@ -22,6 +22,29 @@ export class PollinationsProvider implements AIProvider {
 
     systemPrompt = systemPrompt.replace("{PROMPT}", options.prompt ?? "");
 
+    // If there is a reference image, use Gemini's free tier to describe it
+    // and append that description to the prompt so the Flux model can replicate it.
+    let referenceDescription = "";
+    if (options.referenceImages && options.referenceImages.length > 0) {
+      try {
+        const firstImg = options.referenceImages[0];
+        const descResult = await this.gemini.describeImage({
+          imageUrl: firstImg.startsWith("http") ? firstImg : undefined,
+          imageBase64: firstImg.startsWith("data:") ? firstImg.split(",")[1] : undefined,
+          mimeType: firstImg.startsWith("data:") ? firstImg.match(/:(.*?);/)?.[1] : undefined,
+        });
+        if (descResult && descResult.description) {
+          referenceDescription = descResult.description;
+        }
+      } catch (err) {
+        console.error("Failed to describe reference image with Gemini:", err);
+      }
+    }
+
+    if (referenceDescription) {
+      systemPrompt = `${systemPrompt}. The generated output must resemble this subject: ${referenceDescription}`;
+    }
+
     // Encode prompt safely
     const encodedPrompt = encodeURIComponent(systemPrompt);
     const width = options.width ?? 1024;
