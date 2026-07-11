@@ -61,7 +61,7 @@ export class ReplicateProvider implements AIProvider {
       if (refImages.length === 1) {
         console.log("[Replicate] Generating base target scene for face swap...");
         const targetOutput = await this.replicate.run(
-          "stability-ai/sdxl:39ed631f1e141a46cbd572b9984434fc6147b793330f94d7b6b4e2d3123d34b4",
+          "stability-ai/sdxl:7762fd07cf82c948538e41f63f77d685e02b063e37e496e96eefd46c929f9bdc",
           {
             input: {
               prompt: systemPrompt,
@@ -79,7 +79,7 @@ export class ReplicateProvider implements AIProvider {
 
       console.log("[Replicate] Performing face swap...");
       const output = await this.replicate.run(
-        "lucataco/faceswap:9a42385ee4589aa6c05d153443199feaf38531e21b79fba50672e811c7502c3b",
+        "lucataco/faceswap:9a4298548422074c3f57258c5d544497314ae4112df80d116f0d2109e843d20d",
         {
           input: {
             target_image: targetUrl,
@@ -123,7 +123,7 @@ export class ReplicateProvider implements AIProvider {
       }
 
       const output = await this.replicate.run(
-        "stability-ai/sdxl:39ed631f1e141a46cbd572b9984434fc6147b793330f94d7b6b4e2d3123d34b4",
+        "stability-ai/sdxl:7762fd07cf82c948538e41f63f77d685e02b063e37e496e96eefd46c929f9bdc",
         {
           input: {
             prompt: finalPrompt,
@@ -141,7 +141,7 @@ export class ReplicateProvider implements AIProvider {
     // ─── 4. TEXT-TO-IMAGE FALLBACK ───────────────────────────────────────────
     console.log("[Replicate] Running Text-to-Image...");
     const output = await this.replicate.run(
-      "stability-ai/sdxl:39ed631f1e141a46cbd572b9984434fc6147b793330f94d7b6b4e2d3123d34b4",
+      "stability-ai/sdxl:7762fd07cf82c948538e41f63f77d685e02b063e37e496e96eefd46c929f9bdc",
       {
         input: {
           prompt: systemPrompt,
