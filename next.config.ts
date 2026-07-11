@@ -45,6 +45,19 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  // Tambahkan bagian Webpack ini di bawah pengaturan headers
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        tls: false,
+        net: false,
+        fs: false,
+      };
+    }
+    return config;
+  },
 };
 
 export default nextConfig;
