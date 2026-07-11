@@ -9,7 +9,7 @@ import {
 const GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta";
 
 // Feature slug → Gemini system prompt
-const FEATURE_PROMPTS: Record<string, string> = {
+export const FEATURE_PROMPTS: Record<string, string> = {
   "remove-bg":
     "Remove the background from this image completely. Make the background fully transparent. Keep the subject sharp and intact.",
   "retouch":

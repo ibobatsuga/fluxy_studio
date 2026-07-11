@@ -1,11 +1,12 @@
 import { AIProvider } from "./types";
-import { GeminiProvider } from "./gemini";
+import { PollinationsProvider } from "./pollinations";
 
 export * from "./types";
 
 /**
  * Get the configured AI provider instance.
- * Currently defaults to Gemini. Can be extended with provider selection logic.
+ * Switch to Pollinations to allow free, high-quality image generation (no billing constraints)
+ * while utilizing Gemini's free tier for multimodal description.
  */
 export function getProvider(): AIProvider {
   const apiKey = process.env.GOOGLE_API_KEY;
@@ -16,5 +17,5 @@ export function getProvider(): AIProvider {
     );
   }
 
-  return new GeminiProvider(apiKey);
+  return new PollinationsProvider(apiKey);
 }
