@@ -75,7 +75,7 @@ export class GeminiProvider implements AIProvider {
   }
 
   async generateImage(options: GenerateImageOptions & { featureSlug?: string }): Promise<GenerateImageResult> {
-    const model = "gemini-2.0-flash-exp-image-generation";
+    const model = "gemini-2.5-flash-image";
 
     // Build system prompt from feature
     let systemPrompt =
